@@ -1,17 +1,28 @@
-const { Builder, By, Key, until } = require("selenium-webdriver");
-const { elementLocated } = require("selenium-webdriver/lib/until");
+const {
+  Builder,
+  By,
+  Key,
+  until,
+  elementLocated,
+} = require("selenium-webdriver");
+
+// import JavascriptExecutor from 'selenium-webdriver'
 
 const driver = new Builder().forBrowser("chrome").build();
 const TIMEOUT = 10000;
 const sleepTime = 3000;
 driver.manage().setTimeouts({ implicit: TIMEOUT });
 
+// JavascriptExecutor js = new  JavascriptExecutor, driver;
+// js.executeScript("window.scrollBy(0,250)", "");
+
+// driver.manage().window().maximize();
+
 async function openWebsite() {
   driver.get(
     "https://rori4.github.io/selenium-practice/#/pages/practice/simple-registration"
   );
-  // console.log("first method working");
-
+  console.log("first method working");
   await driver
     .findElement(By.xpath('//div[@class="logo-containter"]/a/i'))
     .click();
@@ -245,13 +256,40 @@ async function iframeForm() {
     .actions()
     .sendKeys(Key.chord(Key.TAB, Key.ARROW_DOWN, Key.ARROW_DOWN))
     .perform();
+
+  await driver
+    .actions()
+    .sendKeys(Key.chord(Key.TAB, Key.TAB, Key.TAB))
+    .perform();
+
+  await driver
+    .actions()
+    .sendKeys(Key.chord(Key.ARROW_DOWN, Key.ARROW_DOWN, Key.ARROW_DOWN))
+    .perform();
+
+  await driver.actions().sendKeys(Key.chord(Key.ENTER, Key.TAB)).perform();
+  await driver
+    .actions()
+    .sendKeys(
+      Key.chord(
+        "02",
+        "09",
+        "1997",
+        Key.TAB,
+        Key.SPACE,
+        Key.TAB,
+        Key.TAB,
+        Key.SPACE,
+        Key.TAB,
+        "everything!",
+        Key.TAB,
+        Key.SPACE
+      )
+    )
+    .perform();
+    driver.executeScript("window.scrollBy(0,1000)");
+  // driver.sleep(5000000);
 }
-// await driver
-//   .actions()
-//   .sendKeys(
-//     Key.chord(Key.ARROW_DOWN, Key.ARROW_DOWN, Key.ARROW_DOWN, Key.ARROW_DOWN)
-//   )
-//   .perform();
 
 async function allMethods() {
   await openWebsite();
@@ -263,7 +301,7 @@ async function allMethods() {
 
   // await datePickerForm();
 
-  // await fileUploadForm();
+  await fileUploadForm();
 
   await iframeForm();
 }
