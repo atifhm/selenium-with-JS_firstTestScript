@@ -13,9 +13,6 @@ const TIMEOUT = 10000;
 const sleepTime = 3000;
 driver.manage().setTimeouts({ implicit: TIMEOUT });
 
-// JavascriptExecutor js = new  JavascriptExecutor, driver;
-// js.executeScript("window.scrollBy(0,250)", "");
-
 // driver.manage().window().maximize();
 
 async function openWebsite() {
@@ -26,6 +23,8 @@ async function openWebsite() {
   await driver
     .findElement(By.xpath('//div[@class="logo-containter"]/a/i'))
     .click();
+
+  // await driver.executeScript("alert('hyder')");
 }
 
 async function simpleRegistration() {
@@ -287,8 +286,60 @@ async function iframeForm() {
       )
     )
     .perform();
-    driver.executeScript("window.scrollBy(0,1000)");
+
   // driver.sleep(5000000);
+}
+
+async function tableData() {
+  var usertable = [];
+  await driver
+    .findElement(By.xpath("//span[contains(text(),'Tables Practice')]"))
+    .click();
+
+  await driver
+    .findElement(By.xpath("//span[contains(text(),'01.Smart Table')]"))
+    .click();
+
+  do {
+    try {
+      var rowList = await driver.findElements(By.xpath("//tbody/tr"));
+    } catch (error) {
+      console.log(error);
+    }
+    for (let l of rowList) {
+      let data = await l.getText();
+      let user = data.split(/\n/);
+      usertable.push({
+        id: user[0],
+        fname: user[1],
+        lname: user[2],
+        username: user[3],
+        email: user[4],
+        age: user[5],
+      });
+    }
+    var nextpage;
+    try {
+      nextpage = await driver
+        .findElement(
+          By.xpath(
+            "//span[contains(text(),'Last')]/parent::a/parent::li[contains(@class,'disabled')]"
+          )
+        )
+        .isDisplayed();
+      // console.log("nextpage", Boolean(nextpage));
+    } catch (error) {}
+    console.table(usertable);
+
+    if (Boolean(nextpage) == false) {
+      await driver
+        .findElement(By.xpath("//span[contains(text(),'Next')]/parent::a"))
+        .click();
+      usertable = [];
+    } else {
+      break;
+    }
+  } while (Boolean(nextpage) == false);
 }
 
 async function allMethods() {
@@ -301,9 +352,10 @@ async function allMethods() {
 
   // await datePickerForm();
 
-  await fileUploadForm();
+  // await fileUploadForm();
 
-  await iframeForm();
+  // await iframeForm();
+  await tableData();
 }
 
 allMethods();
